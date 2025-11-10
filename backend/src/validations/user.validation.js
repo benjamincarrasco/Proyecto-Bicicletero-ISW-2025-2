@@ -2,9 +2,9 @@
 import Joi from "joi";
 
 const domainEmailValidator = (value, helper) => {
-  if (!value.endsWith("@gmail.cl")) {
+  if (!value.endsWith("@bicicletero.cl")) {
     return helper.message(
-      "El correo electrónico debe ser del dominio @gmail.cl"
+      "El correo electrónico no es correcto."
     );
   }
   return value;
