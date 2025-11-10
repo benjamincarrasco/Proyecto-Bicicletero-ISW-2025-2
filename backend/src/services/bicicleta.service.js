@@ -3,7 +3,7 @@ import Bicicleta from "../entity/bicicleta.entity.js";
 import ParkingConfig from "../entity/parkingConfig.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 
-export async function searchBicyclesService(query) {
+export async function buscarBicicletaService(query) {
   try {
     const { rut, cupoId } = query;
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
@@ -16,13 +16,13 @@ export async function searchBicyclesService(query) {
       whereClause.cupoId = parseInt(cupoId);
     }
 
-    const bicycles = await bicycleRepository.find({ where: whereClause });
+    const bicicleta = await bicycleRepository.find({ where: whereClause });
 
-    if (!bicycles || bicycles.length === 0) {
+    if (!bicicleta || bicicleta.length === 0) {
       return [null, "No se encontraron bicicletas con los criterios especificados"];
     }
 
-    return [bicycles, null];
+    return [bicicleta, null];
   } catch (error) {
     return [null, "Error interno del servidor"];
   }

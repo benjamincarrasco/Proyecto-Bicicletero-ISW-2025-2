@@ -1,22 +1,22 @@
 "use strict";
-import { getBicycleStatsService, 
+import { buscarBicicletaService,
+        getBicycleStatsService, 
         registerBicycleService, 
-        removeBicycleService, 
-        searchBicyclesService 
+        removeBicycleService
     } from "../services/bicicleta.service.js";
-import { bicycleRegisterValidation, bicycleSearchValidation } from "../validations/bicicleta.validation.js";
+import { bicycleRegisterValidation, buscarBicicletaValidation } from "../validations/bicicleta.validation.js";
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 
-export async function searchBicycles(req, res) {
+export async function buscarBicicleta(req, res) {
   try {
-    const { error } = bicycleSearchValidation.validate(req.query);
+    const { error } = buscarBicicletaValidation.validate(req.query);
     if (error) return handleErrorClient(res, 400, error.message);
 
-    const [bicycles, errorBicycles] = await searchBicyclesService(req.query);
-    if (errorBicycles) 
-        return handleErrorClient(res, 404, errorBicycles);
+    const [bicicleta, errorBicicleta] = await buscarBicicletaService(req.query);
+    if (errorBicicleta) 
+        return handleErrorClient(res, 404, errorBicicleta);
 
-    handleSuccess(res, 200, "Bicicletas encontradas", bicycles);
+    handleSuccess(res, 200, "Bicicletas encontradas", bicicleta);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
@@ -48,7 +48,7 @@ export async function removeBicycle(req, res) {
   }
 }
 
-export async function getBicycleStats(req, res) {
+export async function getDatosBicicletas(req, res) {
   try {
     const [stats, error] = await getBicycleStatsService();
     if (error) return handleErrorClient(res, 404, error);

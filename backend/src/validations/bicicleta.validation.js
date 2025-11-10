@@ -1,7 +1,7 @@
 "use strict";
 import Joi from "joi";
 
-export const bicycleSearchValidation = Joi.object({
+export const buscarBicicletaValidation = Joi.object({
   rut: Joi.string().pattern(/^[0-9]{7,8}-[0-9kK]{1}$/),
   cupoId: Joi.number().integer().positive()
 }).or("rut", "cupoId").messages({
