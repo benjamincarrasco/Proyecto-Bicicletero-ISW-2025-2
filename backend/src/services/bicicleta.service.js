@@ -84,3 +84,23 @@ export async function removeBicycleService(bicycleId) {
   }
 }
 
+export async function getBicicletaseDatosService() {
+  try {
+    const bicicletaRepository = AppDataSource.getRepository(Bicicleta);
+    const configRepository = AppDataSource.getRepository(ParkingConfig);
+
+    const config = await configRepository.findOne({ where: { id: 1 } });
+    const bicicletasIngresadas = await bicicletaRepository.count({
+      where: { estado: "ingresada" }
+    });
+
+    return [{
+      config,
+      bicicletasIngresadas
+    }, null];
+  } catch (error) {
+    return [null, "Error interno del servidor"];
+  }
+}
+
+

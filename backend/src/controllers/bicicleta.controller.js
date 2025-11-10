@@ -1,6 +1,6 @@
 "use strict";
 import { buscarBicicletaService,
-        getBicycleStatsService, 
+        getBicicletaseDatosService, 
         registerBicycleService, 
         removeBicycleService
     } from "../services/bicicleta.service.js";
@@ -50,7 +50,7 @@ export async function removeBicycle(req, res) {
 
 export async function getDatosBicicletas(req, res) {
   try {
-    const [stats, error] = await getBicycleStatsService();
+    const [stats, error] = await getBicicletaseDatosService();
     if (error) return handleErrorClient(res, 404, error);
 
     handleSuccess(res, 200, "Estadísticas del bicicletero", stats);
