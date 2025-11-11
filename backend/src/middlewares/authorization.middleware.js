@@ -9,7 +9,7 @@ export async function isAdmin(req, res, next) {
     const userFound = await userRepository.findOneBy({ email: req.user.email });
     
     if (!userFound) return handleErrorClient(res, 404, "Usuario no encontrado");
-    if (userFound.rol !== "administrador") return handleErrorClient(res, 403, "Se requiere rol de administrador");
+    if (userFound.rol.toLowerCase() !== "administrador") return handleErrorClient(res, 403, "Se requiere rol de administrador");
     
     next();
   } catch (error) {
@@ -23,7 +23,8 @@ export async function isGuardia(req, res, next) {
     const userFound = await userRepository.findOneBy({ email: req.user.email });
     
     if (!userFound) return handleErrorClient(res, 404, "Usuario no encontrado");
-    if (userFound.rol !== "guardia" && userFound.rol !== "administrador") {
+    const rolLower = userFound.rol.toLowerCase();
+    if (rolLower !== "guardia" && rolLower !== "administrador") {
       return handleErrorClient(res, 403, "Se requiere rol de guardia o administrador");
     }
     

@@ -54,17 +54,9 @@ const BicycleSchema = new EntitySchema({
     estado: {
       type: "varchar",
       length: 20,
-      default: "ingresada",
+      default: "Disponible",
       nullable: false,
-    },
-    fechaIngreso: {
-      type: "timestamp",
-      default: () => "CURRENT_TIMESTAMP",
-      nullable: false,
-    },
-    fechaSalida: {
-      type: "timestamp",
-      nullable: true,
+      comment: "Disponible | EnUso | Mantenimiento",
     },
     createdAt: {
       type: "timestamp",
