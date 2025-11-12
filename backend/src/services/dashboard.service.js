@@ -5,11 +5,7 @@ import Reserva from "../entity/reserva.entity.js";
 import Jornada from "../entity/jornada.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 
-/**
- * Obtiene los datos para el dashboard del bicicletero
- * Incluye: ocupación actual, cupos disponibles, próximas reservas en 1 hora
- * @returns {Array} [dashboardData, error]
- */
+
 export async function getDashboardDataService() {
   try {
     const parkingRepository = AppDataSource.getRepository(ParkingConfig);
@@ -37,22 +33,16 @@ export async function getDashboardDataService() {
     const ahora = new Date();
     const proximaHora = new Date(ahora.getTime() + 60 * 60 * 1000);
 
-    // Las reservas están definidas por fecha y bloqueHorario (ej: "10:00-11:00")
-    // Para simplificar, obtenemos reservas "Confirmadas" de hoy en adelante
     const proximasReservas = await reservaRepository.find({
       where: {
         estado: "Confirmada",
-        // Aquí podrías agregar más lógica si necesitas filtrar por bloque horario
-        // Por ahora, obtener todas las confirmadas
       },
       relations: ["user"],
     });
 
-    // Filtrar manualmente reservas que caen en los próximos 60 minutos
-    // (dependiendo de cómo definan el bloqueHorario)
+
     const proximasEnLaHora = proximasReservas.filter((reserva) => {
-      // Aquí depende de cómo manejen los bloques horarios
-      // Por ahora, retornar todas las confirmadas (puedes ajustar después)
+
       return true;
     });
 

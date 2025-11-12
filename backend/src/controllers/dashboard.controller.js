@@ -2,10 +2,7 @@
 import { getDashboardDataService } from "../services/dashboard.service.js";
 import { handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 
-/**
- * Controlador para obtener datos del dashboard
- * GET /api/dashboard
- */
+
 export async function getDashboard(req, res) {
   try {
     const [dashboardData, error] = await getDashboardDataService();
