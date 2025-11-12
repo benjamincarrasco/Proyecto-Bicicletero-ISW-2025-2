@@ -9,8 +9,14 @@ export async function getUserService(query) {
 
     const userRepository = AppDataSource.getRepository(User);
 
+    const whereConditions = [];
+    
+    if (id) whereConditions.push({ id });
+    if (rut) whereConditions.push({ rut });
+    if (email) whereConditions.push({ email });
+
     const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
+      where: whereConditions,
     });
 
     if (!userFound) return [null, "Usuario no encontrado"];
@@ -47,8 +53,14 @@ export async function updateUserService(query, body) {
 
     const userRepository = AppDataSource.getRepository(User);
 
+    const whereConditions = [];
+    
+    if (id) whereConditions.push({ id });
+    if (rut) whereConditions.push({ rut });
+    if (email) whereConditions.push({ email });
+
     const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
+      where: whereConditions,
     });
 
     if (!userFound) return [null, "Usuario no encontrado"];
@@ -107,14 +119,20 @@ export async function deleteUserService(query) {
 
     const userRepository = AppDataSource.getRepository(User);
 
+    const whereConditions = [];
+    
+    if (id) whereConditions.push({ id });
+    if (rut) whereConditions.push({ rut });
+    if (email) whereConditions.push({ email });
+
     const userFound = await userRepository.findOne({
-      where: [{ id: id }, { rut: rut }, { email: email }],
+      where: whereConditions,
     });
 
     if (!userFound) return [null, "Usuario no encontrado"];
 
     if (userFound.rol === "administrador") {
-      return [null, "No se puede eliminar un usuario con rol de administrador"];
+      return [null, "No se puede eliminar un usuario con rol de administrador "];
     }
 
     const userDeleted = await userRepository.remove(userFound);
