@@ -209,7 +209,6 @@ export async function getBicicletasDatosService() {
     const jornadaRepository = AppDataSource.getRepository(Jornada);
 
     const config = await configRepository.findOne({ where: { id: 1 } });
-    const bicicletasEnUso = await bicycleRepository.count({ where: { estado: "EnUso" } });
     const bicicletasDisponibles = await bicycleRepository.count({ where: { estado: "Disponible" } });
     const jornadasCompletadas = await jornadaRepository.count({ where: { estado: "Completada" } });
 
@@ -221,7 +220,6 @@ export async function getBicicletasDatosService() {
       totalCupos: config.totalCupos,
       cuposDisponibles: config.cuposDisponibles,
       cuposOcupados: config.cuposOcupados,
-      bicicletasEnUso,
       bicicletasDisponibles,
       jornadasCompletadas
     }, null];
