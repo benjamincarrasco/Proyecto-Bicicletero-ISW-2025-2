@@ -6,8 +6,6 @@ import parkingRoutes from "./parking.routes.js";
 import bicletaRoutes from "./bicicleta.routes.js";
 import reservaRoutes from "./reserva.routes.js";
 import dashboardRoutes from "./dashboard.routes.js";
-import reportesRoutes from "./reportes.routes.js";
-import anomaliasRoutes from "./anomalias.routes.js";
 
 const router = Router();
 
@@ -22,9 +20,7 @@ router
     .use("/parking", parkingRoutes)
     .use("/bicis", bicletaRoutes)
     .use("/reservas", reservaRoutes)
-    .use("/dashboard", dashboardRoutes)
-    .use("/reportes", reportesRoutes)
-    .use("/anomalias", anomaliasRoutes);
+    .use("/dashboard", dashboardRoutes);
 
 
 export default router;
