@@ -2,9 +2,9 @@
 import Joi from "joi";
 
 const domainEmailValidator = (value, helper) => {
-  if (!value.endsWith("@bicicletero.cl")) {
+  if (!value.endsWith("@gmail.cl")) {
     return helper.message(
-      "El correo electrónico no es correcto."
+      "El correo electrónico debe finalizar en @gmail.cl."
     );
   }
   return value;
@@ -12,23 +12,16 @@ const domainEmailValidator = (value, helper) => {
 
 export const authValidation = Joi.object({
   email: Joi.string()
-    .min(15)
-    .max(35)
     .email()
     .required()
     .messages({
       "string.empty": "El correo electrónico no puede estar vacío.",
       "any.required": "El correo electrónico es obligatorio.",
       "string.base": "El correo electrónico debe ser de tipo texto.",
-      "string.email": "El correo electrónico debe finalizar en @gmail.cl.",
-      "string.min": "El correo electrónico debe tener al menos 15 caracteres.",
-      "string.max": "El correo electrónico debe tener como máximo 35 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+      "string.email": "El correo electrónico debe ser válido.",
+    }),
   password: Joi.string()
-    .min(8)
-    .max(26)
-    .pattern(/^[a-zA-Z0-9]+$/)
+    .min(6)
     .required()
     .messages({
       "string.empty": "La contraseña no puede estar vacía.",
@@ -44,19 +37,15 @@ export const authValidation = Joi.object({
 
 export const registerValidation = Joi.object({
   nombreCompleto: Joi.string()
-    .min(15)
-    .max(50)
-    .pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
+    .min(3)
     .required()
     .messages({
       "string.empty": "El nombre completo no puede estar vacío.",
       "any.required": "El nombre completo es obligatorio.",
       "string.base": "El nombre completo debe ser de tipo texto.",
-      "string.min": "El nombre completo debe tener al menos 15 caracteres.",
-      "string.max": "El nombre completo debe tener como máximo 50 caracteres.",
-      "string.pattern.base": "El nombre completo solo puede contener letras y espacios.",
+      "string.min": "El nombre completo debe tener al menos 3 caracteres.",
     }),
-    rut: Joi.string()
+  rut: Joi.string()
     .min(9)
     .max(12)
     .required()
@@ -69,23 +58,16 @@ export const registerValidation = Joi.object({
       "string.pattern.base": "Formato rut inválido, debe ser xx.xxx.xxx-x o xxxxxxxx-x.",
     }),
   email: Joi.string()
-    .min(15)
-    .max(35)
     .email()
     .required()
     .messages({
       "string.empty": "El correo electrónico no puede estar vacío.",
       "any.required": "El correo electrónico es obligatorio.",
       "string.base": "El correo electrónico debe ser de tipo texto.",
-      "string.email": "El correo electrónico debe finalizar en @gmail.cl.",
-      "string.min": "El correo electrónico debe tener al menos 15 caracteres.",
-      "string.max": "El correo electrónico debe tener como máximo 35 caracteres.",
-    })
-    .custom(domainEmailValidator, "Validación dominio email"),
+      "string.email": "El correo electrónico debe ser válido.",
+    }),
   password: Joi.string()
-    .min(8)
-    .max(26)
-    .pattern(/^[a-zA-Z0-9]+$/)
+    .min(6)
     .required()
     .messages({
       "string.empty": "La contraseña no puede estar vacía.",
@@ -96,7 +78,7 @@ export const registerValidation = Joi.object({
       "string.pattern.base": "La contraseña solo puede contener letras y números.",
     }),
 })
-  .unknown(false)
+  .unknown(true)
   .messages({
   "object.unknown": "No se permiten propiedades adicionales.",
 });

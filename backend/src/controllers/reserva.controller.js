@@ -19,7 +19,12 @@ export const createReserva = async (req, res) => {
       );
     }
 
-    const [reserva, errorService] = await reservaService.createReservaService(value);
+    const userIdAutenticado = req.user.id;
+
+    const [reserva, errorService] = await reservaService.createReservaService({
+        ...value,
+        userId: userIdAutenticado // Usamos el ID seguro del token
+    });
 
     if (errorService) {
       if (errorService.includes("reservado")) {

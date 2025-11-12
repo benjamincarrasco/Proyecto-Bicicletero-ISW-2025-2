@@ -4,6 +4,7 @@ import { buscarBicicleta,
     getDatosBicicletas,   
     registerBicycle,
     removeBicycle,
+    registrarSalidaBicicleta,
 } from "../controllers/bicicleta.controller.js";
 import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 import { isGuardia } from "../middlewares/authorization.middleware.js";
@@ -18,7 +19,8 @@ router
   .get("/buscar", buscarBicicleta)
   .get("/datos", getDatosBicicletas) 
   .post("/register", registerBicycle)
-  .patch("/remove/:id", removeBicycle);
+  .patch("/remove/:id", removeBicycle)
+  .post("/salida", registrarSalidaBicicleta);
 
 export default router;
 

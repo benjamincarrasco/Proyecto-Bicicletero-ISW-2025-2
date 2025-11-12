@@ -3,7 +3,8 @@ import Joi from "joi";
 
 export const buscarBicicletaValidation = Joi.object({
   rut: Joi.string().pattern(/^[0-9]{7,8}-[0-9kK]{1}$/),
-  cupoId: Joi.number().integer().positive()
+  cupoId: Joi.number().integer().positive(),
+  estado: Joi.string().valid("Disponible", "EnUso", "Mantenimiento")
 }).or("rut", "cupoId").messages({
   "object.missing": "Debe proporcionar rut o cupoId para la búsqueda"
 });
@@ -17,4 +18,13 @@ export const bicycleRegisterValidation = Joi.object({
   nombrePropietario: Joi.string().min(5).max(255).required(),
   emailPropietario: Joi.string().email().required(),
   cupoId: Joi.number().integer().positive().optional()
+});
+
+export const bicycleExitValidation = Joi.object({
+  bicicletaId: Joi.number().integer().positive().required(),
+  rutEstudiante: Joi.string().pattern(/^[0-9]{7,8}-[0-9kK]{1}$/).required(),
+  tipoDocumento: Joi.string().valid("DNI", "TNE", "Pasaporte", "Carnet de Identidad").required(),
+  observaciones: Joi.string().max(500).optional()
+}).messages({
+  "any.only": "El tipo de documento debe ser uno de: DNI, TNE, Pasaporte, Carnet de Identidad"
 });

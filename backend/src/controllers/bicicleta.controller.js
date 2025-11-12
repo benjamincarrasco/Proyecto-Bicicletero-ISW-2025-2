@@ -2,9 +2,10 @@
 import { buscarBicicletaService,
         getBicicletaseDatosService, 
         registerBicycleService, 
-        removeBicycleService
+        removeBicycleService,
+        registerBicycleExitService
     } from "../services/bicicleta.service.js";
-import { bicycleRegisterValidation, buscarBicicletaValidation } from "../validations/bicicleta.validation.js";
+import { bicycleRegisterValidation, buscarBicicletaValidation, bicycleExitValidation } from "../validations/bicicleta.validation.js";
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 
 export async function buscarBicicleta(req, res) {
@@ -54,6 +55,20 @@ export async function getDatosBicicletas(req, res) {
     if (error) return handleErrorClient(res, 404, error);
 
     handleSuccess(res, 200, "Estadísticas del bicicletero", stats);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function registrarSalidaBicicleta(req, res) {
+  try {
+    const { error } = bicycleExitValidation.validate(req.body);
+    if (error) return handleErrorClient(res, 400, error.message);
+
+    const [result, errorExit] = await registerBicycleExitService(req.body);
+    if (errorExit) return handleErrorClient(res, 400, errorExit);
+
+    handleSuccess(res, 200, "Salida registrada exitosamente. Jornada completada.", result);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
