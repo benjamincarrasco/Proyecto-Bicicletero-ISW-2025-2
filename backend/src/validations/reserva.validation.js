@@ -4,10 +4,13 @@ import Joi from "joi";
 //esquema para la creación de una reserva
 export const reservaSchema = Joi.object({
 
-  userId: Joi.number().integer().positive().required(), //id del usuario que hace la reserva
-  
-  fecha: Joi.date().iso().required().messages({ //formato para fecha 
-    "date.base": "La fecha debe ser válida.",
+  userId: Joi.number().integer().positive().required().messages({
+    "number.base": "El userId debe ser un número.",
+    "any.required": "El userId es requerido.",
+  }),
+
+  fecha: Joi.string().isoDate().required().messages({ //formato para fecha ISO YYYY-MM-DD
+    "string.base": "La fecha debe ser un string.",
     "date.format": "La fecha debe estar en formato ISO (YYYY-MM-DD).",
     "any.required": "La fecha es requerida.",
   }),

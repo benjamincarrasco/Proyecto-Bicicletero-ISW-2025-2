@@ -19,14 +19,18 @@ export const createReserva = async (req, res) => {
       );
     }
 
+    const [reserva, errorService] = await reservaService.createReservaService(value);
+
+    //manejar error del servicio
     if (errorService) {
-      if (errorService.includes("reservado")) {
+      if (typeof errorService === "string" && errorService.includes("reservado")) {
         return handleErrorClient(res, 400, "Error al crear la reserva", errorService);
       }
       return handleErrorServer(res, 500, errorService);
     }
 
-    return handleSuccess(res, 201, "Reserva creada exitosamente", reserva); 
+    //responder con éxito
+    return handleSuccess(res, 201, "Reserva creada exitosamente", reserva);
 
   } catch (catchError) {
     console.error("catch en createReserva:", catchError);
