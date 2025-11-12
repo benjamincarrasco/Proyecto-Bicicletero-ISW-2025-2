@@ -1,23 +1,29 @@
 "use strict";
 import { buscarBicicletaService,
-        getBicicletaseDatosService, 
+        getBicicletasDatosService,
+        registerBicycleExitService,
         registerBicycleService, 
         removeBicycleService,
-        registerBicycleExitService
     } from "../services/bicicleta.service.js";
-import { bicycleRegisterValidation, buscarBicicletaValidation, bicycleExitValidation } from "../validations/bicicleta.validation.js";
+import { bicycleExitValidation,bicycleRegisterValidation, 
+  buscarBicicletaValidation  } from "../validations/bicicleta.validation.js";
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 
 export async function buscarBicicleta(req, res) {
   try {
-    const { error } = buscarBicicletaValidation.validate(req.query);
-    if (error) return handleErrorClient(res, 400, error.message);
+    const { rut, cupoId } = req.query;
 
-    const [bicicleta, errorBicicleta] = await buscarBicicletaService(req.query);
+    // Usar la validación de Joi
+    const { error } = buscarBicicletaValidation.validate({ rut, cupoId });
+    if (error) {
+      return handleErrorClient(res, 400, error.message);
+    }
+
+    const [bicicleta, errorBicicleta] = await buscarBicicletaService({ rut, cupoId });
     if (errorBicicleta) 
         return handleErrorClient(res, 404, errorBicicleta);
 
-    handleSuccess(res, 200, "Bicicletas encontradas", bicicleta);
+    handleSuccess(res, 200, "Bicicleta encontrada", bicicleta);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
@@ -51,7 +57,7 @@ export async function removeBicycle(req, res) {
 
 export async function getDatosBicicletas(req, res) {
   try {
-    const [stats, error] = await getBicicletaseDatosService();
+    const [stats, error] = await getBicicletasDatosService();
     if (error) return handleErrorClient(res, 404, error);
 
     handleSuccess(res, 200, "Estadísticas del bicicletero", stats);

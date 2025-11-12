@@ -8,6 +8,5 @@ export const parkingConfigValidation = Joi.object({
     "number.positive": "El total de cupos debe ser positivo",
     "any.required": "El total de cupos es requerido"
     }),
-    identificacionCupos: Joi.boolean().default(false),
     descripcion: Joi.string().max(500).allow("", null)
 });

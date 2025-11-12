@@ -6,30 +6,26 @@ import { AppDataSource } from "../config/configDb.js";
 
 export async function buscarBicicletaService(query) {
   try {
-    const { rut, cupoId, estado } = query;
+    const { rut, cupoId } = query;
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
 
-    let whereClause = {};
+    // REQUISITO 2: Búsqueda por RUT o CupoID
+    let whereClause = { estado: "EnUso" }; // Solo bicicletas ingresadas
     
     if (rut) {
       whereClause.rutPropietario = rut;
-    }
-    if (cupoId) {
+    } else if (cupoId) {
       whereClause.cupoId = parseInt(cupoId);
     }
-    if (estado) {
-      whereClause.estado = estado;
-    } else {
-      whereClause.estado = "Disponible";
-    }
 
-    const bicicleta = await bicycleRepository.find({ where: whereClause });
+    const bicycles = await bicycleRepository.find({ where: whereClause });
 
-    if (!bicicleta || bicicleta.length === 0) {
+    // REQUISITO 2: Para verificación de seguridad
+    if (!bicycles || bicycles.length === 0) {
       return [null, "No se encontraron bicicletas con los criterios especificados"];
     }
 
-    return [bicicleta, null];
+    return [bicycles, null];
   } catch (error) {
     return [null, "Error interno del servidor"];
   }
@@ -206,27 +202,7 @@ export async function removeBicycleService(bicycleId) {
   }
 }
 
-export async function getBicicletaseDatosService() {
-  try {
-    const bicicletaRepository = AppDataSource.getRepository(Bicicleta);
-    const configRepository = AppDataSource.getRepository(ParkingConfig);
-
-    const config = await configRepository.findOne({ where: { id: 1 } });
-    const bicicletasIngresadas = await bicicletaRepository.count({
-      where: { estado: "ingresada" }
-    });
-
-    return [{
-      config,
-      bicicletasIngresadas
-    }, null];
-  } catch (error) {
-    return [null, "Error interno del servidor"];
-  }
-}
-
-
-export async function getBicycleStatsService() {
+export async function getBicicletasDatosService() {
   try {
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
     const configRepository = AppDataSource.getRepository(ParkingConfig);

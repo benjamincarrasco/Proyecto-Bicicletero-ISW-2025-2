@@ -43,7 +43,6 @@ async function createParkingConfig() {
       totalCupos: 50,
       cuposDisponibles: 50,
       cuposOcupados: 0,
-      identificacionCupos: false,
       descripcion: "Configuración inicial del bicicletero",
     });
     console.log("* => Configuración del bicicletero creada exitosamente");

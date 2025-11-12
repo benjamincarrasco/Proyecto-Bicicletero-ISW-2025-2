@@ -23,11 +23,6 @@ const ParkingConfigSchema = new EntitySchema({
       default: 0,
       nullable: false,
     },
-    identificacionCupos: {
-      type: "boolean",
-      default: false,
-      nullable: false,
-    },
     descripcion: {
       type: "varchar",
       length: 500,

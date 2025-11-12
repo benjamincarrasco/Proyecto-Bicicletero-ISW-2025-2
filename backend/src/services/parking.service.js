@@ -25,7 +25,6 @@ export async function updateParkingConfigService(configData) {
     config.totalCupos = configData.totalCupos;
     config.cuposDisponibles = configData.totalCupos - bicicletasIngresadas;
     config.cuposOcupados = bicicletasIngresadas;
-    config.identificacionCupos = configData.identificacionCupos || false;
     config.descripcion = configData.descripcion;
 
     await configRepository.save(config);
@@ -45,8 +44,7 @@ export async function getParkingConfigService() {
         id: 1,
         totalCupos: 50,
         cuposDisponibles: 50,
-        cuposOcupados: 0,
-        identificacionCupos: false
+        cuposOcupados: 0
         });
         await configRepository.save(config);
     }
