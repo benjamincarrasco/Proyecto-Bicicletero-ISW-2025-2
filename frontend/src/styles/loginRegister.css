@@ -1,0 +1,25 @@
+.page-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    margin: 0;
+}
+
+.lucky-cat {
+  width: 70vh;
+  height: 70vh;
+  object-fit: cover;
+  position: absolute;
+  bottom: 0vh;
+  left: -12vh; 
+  z-index: -1;
+}
+
+
+.login-register-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}

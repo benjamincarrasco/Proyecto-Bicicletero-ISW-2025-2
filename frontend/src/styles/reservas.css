@@ -1,0 +1,90 @@
+.reservas-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.reservas-container h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+.reservas-container.error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    padding: 1rem;
+    border-radius: 4px;
+}
+
+.reservas-table {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.reservas-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reservas-table thead {
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #ddd;
+}
+
+.reservas-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+}
+
+.reservas-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.reservas-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.reservas-table .status {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.reservas-table .status.pendiente {
+    background-color: #ff9800;
+    color: white;
+}
+
+.reservas-table .status.confirmada {
+    background-color: #4caf50;
+    color: white;
+}
+
+.reservas-table .status.cancelada {
+    background-color: #f44336;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .reservas-container {
+        padding: 1rem;
+    }
+
+    .reservas-table {
+        overflow-x: auto;
+    }
+
+    .reservas-table th,
+    .reservas-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+}

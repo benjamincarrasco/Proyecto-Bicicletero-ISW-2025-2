@@ -1,0 +1,120 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 25vh;
+  height: 100%;
+  background-color: #121e44;
+  box-shadow: 5px 2px 5px rgba(0, 0, 0, 0.2);
+  color: #fff0dd;
+  padding: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.sidebar-logo {
+  width: 150px;
+  height: auto;
+  display: block;
+  padding-left: 50px;
+  margin: -20 auto -40px auto; /* Centra la imagen y agrega espacio abajo */
+}
+
+.sidebar h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+.sidebar nav {
+  flex: 1;
+}
+
+.sidebar nav ul {
+  display: flex;
+  flex-direction: column;
+  height: 95%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar nav ul li {
+  margin: 1rem 0;
+}
+
+.sidebar nav ul li.separator {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  margin: 1rem 0;
+}
+
+.sidebar nav ul li a {
+  color: #fff0dd;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.4rem;
+  padding: 10px;
+  vertical-align: middle;
+  gap: 10px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.sidebar nav ul li a .icon {
+  font-size: 1.2rem;
+  color: #fff0dd;
+}
+
+.sidebar nav ul li a.active {
+  color: #fff0dd;
+  background: rgba(0,0,0,0.1);
+  border-right: 4px solid #333;
+}
+
+.sidebar nav ul li a.active .icon {
+  color: #fff0dd;
+}
+
+.sidebar nav ul li a:hover {
+  background: rgba(0,0,0,0.1);
+  transition: background 0.2s;
+  color: #fff0dd;
+}
+
+.sidebar nav ul li a:hover .icon {
+  color: #fff0dd;
+}
+
+li {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+.sidebar .logout {
+  background-color: #f44336;
+  border: 2px transparent #333333;
+  border-radius: 20px;
+  color: white;
+  padding: 2vh 0 2vh 0;
+  margin-top: auto;
+  text-align: center;
+}
+
+.sidebar .logout .icon {
+  color: #fff0dd;
+}
+
+.sidebar .logout:hover {
+  background-color: #d32f2f;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .logout > a:hover {
+  background-color: #d32f2f;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar .logout a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.3rem;
+}

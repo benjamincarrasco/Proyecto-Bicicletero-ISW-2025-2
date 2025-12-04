@@ -1,0 +1,57 @@
+body{
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #fff0dd;
+  text-align: center;
+}
+
+.error-image {
+  width: 70vh;
+  height: 70vh;
+  object-fit: cover;
+  position: absolute;
+  bottom: 0vh;
+  left: -12vh; 
+}
+
+
+.error-title {
+  font-family: 'System-ui', sans-serif;
+  font-size: 8rem;
+  color: #ff4d4f;
+  margin: 0;
+}
+
+.error-description {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 1rem 0;
+}
+
+.error-link {
+  padding: 0.75rem 1.5rem;
+  background-color: #fa8072;
+  color: white;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.error-link:hover {
+  background-color: #ff4834;
+}
