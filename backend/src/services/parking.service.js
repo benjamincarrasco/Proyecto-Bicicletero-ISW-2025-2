@@ -13,7 +13,6 @@ export async function updateParkingConfigService(configData) {
         config = configRepository.create({ id: 1 });
     }
 
-    // Contar bicicletas actualmente en uso (estado: "EnUso")
     const bicicletasEnUso = await bicicletaRepository.count({
         where: { estado: "EnUso" }
     });
@@ -26,7 +25,7 @@ export async function updateParkingConfigService(configData) {
     config.totalCupos = configData.totalCupos;
     config.cuposOcupados = bicicletasEnUso;
     config.cuposDisponibles = configData.totalCupos - bicicletasEnUso;
-    config.descripcion = configData.descripcion;
+    config.descripcion = configData.descripcion || config.descripcion;
 
     await configRepository.save(config);
     return [config, null];
@@ -37,21 +36,22 @@ export async function updateParkingConfigService(configData) {
 
 export async function getParkingConfigService() {
     try {
-    const configRepository = AppDataSource.getRepository(ParkingConfig);
-    let config = await configRepository.findOne({ where: { id: 1 } });
+        const configRepository = AppDataSource.getRepository(ParkingConfig);
+        let config = await configRepository.findOne({ where: { id: 1 } });
     
     if (!config) {
         config = configRepository.create({
         id: 1,
         totalCupos: 50,
         cuposDisponibles: 50,
-        cuposOcupados: 0
+        cuposOcupados: 0,
+        descripcion: "Bicicletero principal"
         });
         await configRepository.save(config);
     }
     
-    return [config, null];
+        return [config, null];
     } catch (error) {
-    return [null, "Error interno del servidor"];
+        return [null, "Error interno del servidor"];
     }
 }

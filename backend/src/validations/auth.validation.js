@@ -1,15 +1,6 @@
 "use strict";
 import Joi from "joi";
 
-const domainEmailValidator = (value, helper) => {
-  if (!value.endsWith("@gmail.cl")) {
-    return helper.message(
-      "El correo electrónico debe finalizar en @gmail.cl."
-    );
-  }
-  return value;
-};
-
 export const authValidation = Joi.object({
   email: Joi.string()
     .email()
@@ -27,9 +18,7 @@ export const authValidation = Joi.object({
       "string.empty": "La contraseña no puede estar vacía.",
       "any.required": "La contraseña es obligatoria.",
       "string.base": "La contraseña debe ser de tipo texto.",
-      "string.min": "La contraseña debe tener al menos 8 caracteres.",
-      "string.max": "La contraseña debe tener como máximo 26 caracteres.",
-      "string.pattern.base": "La contraseña solo puede contener letras y números.",
+      "string.min": "La contraseña debe tener al menos 6 caracteres.",
     }),
 }).unknown(false).messages({
   "object.unknown": "No se permiten propiedades adicionales.",

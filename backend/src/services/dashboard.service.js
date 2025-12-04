@@ -35,7 +35,7 @@ export async function getDashboardDataService() {
 
     const proximasReservas = await reservaRepository.find({
       where: {
-        estado: "Confirmada",
+        estado: "Pendiente",
       },
       relations: ["user"],
     });

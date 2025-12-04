@@ -3,8 +3,7 @@ import Joi from "joi";
 
 export const buscarBicicletaValidation = Joi.object({
   rut: Joi.string().pattern(/^[0-9]{7,8}-[0-9kK]{1}$/),
-  cupoId: Joi.number().integer().positive(),
-  estado: Joi.string().valid("Disponible", "EnUso", "Mantenimiento")
+  cupoId: Joi.number().integer().positive()
 }).or("rut", "cupoId").messages({
   "object.missing": "Debe proporcionar rut o cupoId para la búsqueda"
 });

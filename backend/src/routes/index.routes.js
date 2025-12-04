@@ -20,7 +20,7 @@ router
     .use("/parking", parkingRoutes)
     .use("/bicis", bicletaRoutes)
     .use("/reservas", reservaRoutes)
-    .use("/dashboard", dashboardRoutes);
+    .use("/dashboard", dashboardRoutes);  
 
 
 export default router;

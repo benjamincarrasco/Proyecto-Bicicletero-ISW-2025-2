@@ -9,8 +9,8 @@ export async function buscarBicicletaService(query) {
     const { rut, cupoId } = query;
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
 
-    // REQUISITO 2: Búsqueda por RUT o CupoID
-    let whereClause = { estado: "EnUso" }; // Solo bicicletas ingresadas
+
+    let whereClause = { estado: "EnUso" }; 
     
     if (rut) {
       whereClause.rutPropietario = rut;
@@ -20,7 +20,6 @@ export async function buscarBicicletaService(query) {
 
     const bicycles = await bicycleRepository.find({ where: whereClause });
 
-    // REQUISITO 2: Para verificación de seguridad
     if (!bicycles || bicycles.length === 0) {
       return [null, "No se encontraron bicicletas con los criterios especificados"];
     }
@@ -184,7 +183,7 @@ export async function removeBicycleService(bicycleId) {
 
     // Cancelar jornada activa si existe
     const jornada = await jornadaRepository.findOne({
-      where: { bicicletaId: bicycleId, estado: "Activa" }
+      where: { bicicletaId: bicycleId, estado: "EnUso" }
     });
 
     if (jornada) {
@@ -225,5 +224,20 @@ export async function getBicicletasDatosService() {
     }, null];
   } catch (error) {
     return [null, "Error interno del servidor"];
+  }
+}
+
+export async function getAllBicicletasService() {
+  try {
+    const bicycleRepository = AppDataSource.getRepository(Bicicleta);
+    const bicycles = await bicycleRepository.find();
+    
+    if (!bicycles || bicycles.length === 0) {
+      return [[], null];
+    }
+
+    return [bicycles, null];
+  } catch (error) {
+    return [null, "Error al obtener las bicicletas"];
   }
 }

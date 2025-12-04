@@ -5,19 +5,18 @@ import { buscarBicicleta,
     registerBicycle,
     registrarSalidaBicicleta, 
     removeBicycle,
+    getAllBicicletas,
 } from "../controllers/bicicleta.controller.js";
 import { authenticateJwt } from "../middlewares/authentication.middleware.js";
-import { isGuardia } from "../middlewares/authorization.middleware.js";
 
 const router = Router();
 
-router
-  .use(authenticateJwt)
-  .use(isGuardia);
+router.use(authenticateJwt);
 
 router
   .get("/buscar", buscarBicicleta)
-  .get("/datos", getDatosBicicletas) 
+  .get("/datos", getDatosBicicletas)
+  .get("/", getAllBicicletas)  // Obtener todas las bicicletas
   .post("/register", registerBicycle)
   .patch("/remove/:id", removeBicycle)
   .post("/salida", registrarSalidaBicicleta);
