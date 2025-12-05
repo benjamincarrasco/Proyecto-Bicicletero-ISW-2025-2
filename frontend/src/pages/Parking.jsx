@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import { getParkingConfigService } from '@services/parking.service';
+import { useGetParkingConfig } from '@hooks/parking/useGetParkingConfig';
 import '@styles/parking.css';
 
 export default function Parking() {
     const [parkingConfig, setParkingConfig] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { fetchParkingConfig: getParkingConfig } = useGetParkingConfig();
 
     useEffect(() => {
-        const fetchParkingConfig = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const data = await getParkingConfigService();
+                const data = await getParkingConfig();
                 setParkingConfig(data);
                 setError(null);
             } catch (err) {
@@ -22,7 +23,7 @@ export default function Parking() {
             }
         };
 
-        fetchParkingConfig();
+        fetchData();
     }, []);
 
     if (loading) return <div className="parking-container">Cargando...</div>;

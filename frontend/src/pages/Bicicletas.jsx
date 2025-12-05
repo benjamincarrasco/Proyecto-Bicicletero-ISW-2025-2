@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
-import { obtenerBicicletasService } from '@services/bicicleta.service';
+import { useGetBicicletas } from '@hooks/bicicletas/useGetBicicletas';
 import '@styles/bicicleta.css';
 
 export default function Bicicletas() {
     const [bicicletas, setBicicletas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { fetchBicicletas: getBicicletas } = useGetBicicletas();
 
     useEffect(() => {
-        const fetchBicicletas = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
-                const data = await obtenerBicicletasService();
+                const data = await getBicicletas();
                 setBicicletas(data || []);
                 setError(null);
             } catch (err) {
@@ -22,7 +23,7 @@ export default function Bicicletas() {
             }
         };
 
-        fetchBicicletas();
+        fetchData();
     }, []);
 
     if (loading) return <div className="bicicleta-container">Cargando...</div>;

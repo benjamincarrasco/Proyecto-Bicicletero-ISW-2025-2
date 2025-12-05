@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { buscarBicicletaService } from '@services/bicicleta.service';
+import { useBuscarBicicleta } from '@hooks/bicicletas/useBuscarBicicleta';
 import '@styles/bicicleta.css';
 
 export default function BicicletasGuardia() {
@@ -9,6 +9,7 @@ export default function BicicletasGuardia() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searched, setSearched] = useState(false);
+    const { buscar } = useBuscarBicicleta();
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -25,7 +26,7 @@ export default function BicicletasGuardia() {
                 ? { rut: searchValue }
                 : { cupoId: searchValue };
             
-            const data = await buscarBicicletaService(query);
+            const data = await buscar(query);
             setBicicletas(data || []);
             setSearched(true);
         } catch {
