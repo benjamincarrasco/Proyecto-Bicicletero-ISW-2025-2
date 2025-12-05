@@ -8,9 +8,9 @@ export async function buscarBicicletaService(query) {
   try {
     const { rut, cupoId } = query;
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
+    const jornadaRepository = AppDataSource.getRepository(Jornada);
 
-
-    let whereClause = { estado: "EnUso" }; 
+    let whereClause = {}; 
     
     if (rut) {
       whereClause.rutPropietario = rut;
@@ -18,13 +18,25 @@ export async function buscarBicicletaService(query) {
       whereClause.cupoId = parseInt(cupoId);
     }
 
+    // Buscar todas las bicicletas del propietario/cupo (sin filtro de estado)
     const bicycles = await bicycleRepository.find({ where: whereClause });
 
     if (!bicycles || bicycles.length === 0) {
       return [null, "No se encontraron bicicletas con los criterios especificados"];
     }
 
-    return [bicycles, null];
+    // Obtener historial de jornadas para cada bicicleta
+    const bicicletasConHistorial = await Promise.all(
+      bicycles.map(async (bici) => {
+        const jornadas = await jornadaRepository.find({
+          where: { bicicletaId: bici.id },
+          order: { fechaIngreso: "DESC" }
+        });
+        return { ...bici, jornadas };
+      })
+    );
+
+    return [bicicletasConHistorial, null];
   } catch (error) {
     return [null, "Error interno del servidor"];
   }
@@ -191,37 +203,11 @@ export async function removeBicycleService(bicycleId) {
       await jornadaRepository.save(jornada);
     }
 
-    // Cambiar estado de la bicicleta a Mantenimiento
-    bicycle.estado = "Mantenimiento";
+    // Cambiar estado de la bicicleta a Retirada
+    bicycle.estado = "Retirada";
     await bicycleRepository.save(bicycle);
 
     return [bicycle, null];
-  } catch (error) {
-    return [null, "Error interno del servidor"];
-  }
-}
-
-export async function getBicicletasDatosService() {
-  try {
-    const bicycleRepository = AppDataSource.getRepository(Bicicleta);
-    const configRepository = AppDataSource.getRepository(ParkingConfig);
-    const jornadaRepository = AppDataSource.getRepository(Jornada);
-
-    const config = await configRepository.findOne({ where: { id: 1 } });
-    const bicicletasDisponibles = await bicycleRepository.count({ where: { estado: "Disponible" } });
-    const jornadasCompletadas = await jornadaRepository.count({ where: { estado: "Completada" } });
-
-    if (!config) {
-      return [null, "Configuración del bicicletero no encontrada"];
-    }
-
-    return [{
-      totalCupos: config.totalCupos,
-      cuposDisponibles: config.cuposDisponibles,
-      cuposOcupados: config.cuposOcupados,
-      bicicletasDisponibles,
-      jornadasCompletadas
-    }, null];
   } catch (error) {
     return [null, "Error interno del servidor"];
   }

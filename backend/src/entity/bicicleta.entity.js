@@ -56,7 +56,7 @@ const BicycleSchema = new EntitySchema({
       length: 20,
       default: "Disponible",
       nullable: false,
-      comment: "Disponible | EnUso | Mantenimiento",
+      comment: "Disponible | EnUso | Retirada",
     },
     createdAt: {
       type: "timestamp",

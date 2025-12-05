@@ -1,10 +1,9 @@
 "use strict";
 import { buscarBicicletaService,
-        getBicicletasDatosService,
+        getAllBicicletasService,
         registerBicycleExitService,
         registerBicycleService, 
         removeBicycleService,
-        getAllBicicletasService,
     } from "../services/bicicleta.service.js";
 import { bicycleExitValidation,bicycleRegisterValidation, 
   buscarBicicletaValidation  } from "../validations/bicicleta.validation.js";
@@ -50,17 +49,6 @@ export async function removeBicycle(req, res) {
     if (error) return handleErrorClient(res, 400, error);
 
     handleSuccess(res, 200, "Bicicleta retirada exitosamente", bicycle);
-  } catch (error) {
-    handleErrorServer(res, 500, error.message);
-  }
-}
-
-export async function getDatosBicicletas(req, res) {
-  try {
-    const [stats, error] = await getBicicletasDatosService();
-    if (error) return handleErrorClient(res, 404, error);
-
-    handleSuccess(res, 200, "Estadísticas del bicicletero", stats);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
