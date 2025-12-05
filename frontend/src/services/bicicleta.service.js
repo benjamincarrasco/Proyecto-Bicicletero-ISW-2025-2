@@ -11,7 +11,7 @@ export async function registerBicycleService(bicycleData) {
 }
 
 export async function obtenerBicicletasService() {
-    const response = await axios.get('/bicis');
+    const response = await axios.get('/bicis/datos');
     return response.data.data;
 }
 

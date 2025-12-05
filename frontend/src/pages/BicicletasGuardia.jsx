@@ -49,7 +49,7 @@ export default function BicicletasGuardia() {
                         onChange={(e) => setSearchType(e.target.value)}
                     >
                         <option value="rut">RUT del Propietario</option>
-                        <option value="id">ID del Cupo</option>
+                        <option value="cupoId">ID del Cupo</option>
                     </select>
                 </div>
 
@@ -74,29 +74,42 @@ export default function BicicletasGuardia() {
                 <>
                     {loading && <div>Cargando...</div>}
                     {!loading && bicicletas.length > 0 && (
-                        <div className="bicicleta-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Número de Serie</th>
-                                        <th>Propietario (RUT)</th>
-                                        <th>Cupo ID</th>
-                                        <th>Estado</th>
-                                        <th>Fecha de Entrada</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {bicicletas.map((bicicleta) => (
-                                        <tr key={bicicleta.id}>
-                                            <td>{bicicleta.numeroSerie}</td>
-                                            <td>{bicicleta.rutPropietario}</td>
-                                            <td>{bicicleta.cupoId}</td>
-                                            <td>{bicicleta.estado}</td>
-                                            <td>{new Date(bicicleta.fechaEntrada).toLocaleDateString()}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                        <div className="bicicleta-results">
+                            {bicicletas.map((bicicleta) => (
+                                <div key={bicicleta.id} className="bicicleta-card">
+                                    <h3>Bicicleta #{bicicleta.id}</h3>
+                                    <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
+                                    <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
+                                    <p><strong>Cupo ID:</strong> {bicicleta.cupoId}</p>
+                                    <p><strong>Estado:</strong> {bicicleta.estado}</p>
+                                    
+                                    {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
+                                        <div className="historial">
+                                            <h4>Historial de Entradas y Salidas</h4>
+                                            <table className="historial-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha Entrada</th>
+                                                        <th>Fecha Salida</th>
+                                                        <th>Estado</th>
+                                                        <th>Documento</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {bicicleta.jornadas.map((jornada) => (
+                                                        <tr key={jornada.id}>
+                                                            <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
+                                                            <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
+                                                            <td>{jornada.estado}</td>
+                                                            <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     )}
                     {!loading && bicicletas.length === 0 && (
