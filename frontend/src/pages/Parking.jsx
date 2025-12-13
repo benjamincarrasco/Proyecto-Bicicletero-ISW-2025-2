@@ -24,7 +24,7 @@ export default function Parking() {
         };
 
         fetchData();
-    }, []);
+    },[]);
 
     if (loading) return <div className="parking-container">Cargando...</div>;
     if (error) return <div className="parking-container error">{error}</div>;

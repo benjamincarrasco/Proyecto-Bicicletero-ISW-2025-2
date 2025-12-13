@@ -18,6 +18,10 @@ export default function BicicletasGuardia() {
             return;
         }
 
+        await performSearch();
+    };
+
+    const performSearch = async () => {
         try {
             setLoading(true);
             setError(null);
@@ -67,6 +71,17 @@ export default function BicicletasGuardia() {
                 <button type="submit" disabled={loading}>
                     {loading ? 'Buscando...' : 'Buscar'}
                 </button>
+
+                {searched && (
+                    <button 
+                        type="button" 
+                        onClick={performSearch} 
+                        disabled={loading}
+                        style={{ marginLeft: '10px' }}
+                    >
+                        🔄 Actualizar
+                    </button>
+                )}
             </form>
 
             {error && <div className="error-message">{error}</div>}
