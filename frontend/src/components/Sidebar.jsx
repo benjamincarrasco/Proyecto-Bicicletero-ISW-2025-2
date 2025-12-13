@@ -70,6 +70,14 @@ const Sidebar = () => {
             </NavLink>
           </li>
 
+          {(userRole === "administrador" || userRole === "guardia") && (
+            <li>
+              <NavLink to="/registro-entrada-salida">
+                <FaBicycle className="icon"/> Entrada/Salida
+              </NavLink>
+            </li>
+          )}
+
           <li style={{ height: "70%" }}/>
           <li className="logout">
             <NavLink to="/login" onClick={logoutSubmit}>

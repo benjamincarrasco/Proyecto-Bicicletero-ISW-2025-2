@@ -13,6 +13,7 @@ import Bicicletas from '@pages/Bicicletas';
 import BicicletasGuardia from '@pages/BicicletasGuardia';
 import Parking from '@pages/Parking';
 import Reservas from '@pages/Reservas2';
+import RegistroEntradaSalida from '@pages/RegistroEntradaSalida';
 
 const router = createBrowserRouter([
   {
@@ -63,6 +64,14 @@ const router = createBrowserRouter([
       {
         path: "/reservas",
         element: <Reservas />,
+      },
+      {
+        path: "/registro-entrada-salida",
+        element: (
+          <ProtectedRoute allowedRoles={["administrador", "guardia"]}>
+            <RegistroEntradaSalida />
+          </ProtectedRoute>
+        ),
       },
     ],
   

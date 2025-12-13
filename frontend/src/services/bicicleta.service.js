@@ -10,6 +10,16 @@ export async function registerBicycleService(bicycleData) {
     return response.data.data;
 }
 
+export async function registrarEntradaBicicletaService(bicycleData) {
+    const response = await axios.post('/bicis/register', bicycleData);
+    return response.data.data;
+}
+
+export async function registrarSalidaBicicletaService(exitData) {
+    const response = await axios.post('/bicis/salida', exitData);
+    return response.data.data;
+}
+
 export async function obtenerBicicletasService() {
     const response = await axios.get('/bicis/datos');
     return response.data.data;
