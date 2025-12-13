@@ -216,7 +216,9 @@ export async function removeBicycleService(bicycleId) {
 export async function getAllBicicletasService() {
   try {
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
-    const bicycles = await bicycleRepository.find();
+    const bicycles = await bicycleRepository.find({
+      where: { estado: "EnUso" }
+    });
     
     if (!bicycles || bicycles.length === 0) {
       return [[], null];
