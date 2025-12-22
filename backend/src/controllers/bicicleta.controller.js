@@ -12,13 +12,14 @@ import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers
 export async function buscarBicicleta(req, res) {
   try {
     const { rut, cupoId, id } = req.query;
+    const userRole = req.user?.rol || null;
 
     const { error } = buscarBicicletaValidation.validate({ rut, cupoId, id });
     if (error) {
       return handleErrorClient(res, 400, error.message);
     }
 
-    const [bicicleta, errorBicicleta] = await buscarBicicletaService({ rut, cupoId, id });
+    const [bicicleta, errorBicicleta] = await buscarBicicletaService({ rut, cupoId, id }, userRole);
     if (errorBicicleta) 
         return handleErrorClient(res, 404, errorBicicleta);
 
@@ -70,7 +71,8 @@ export async function registrarSalidaBicicleta(req, res) {
 
 export async function getAllBicicletas(req, res) {
   try {
-    const [bicycles, error] = await getAllBicicletasService();
+    const userRole = req.user?.rol || null;
+    const [bicycles, error] = await getAllBicicletasService(userRole);
     if (error) return handleErrorClient(res, 404, error);
 
     handleSuccess(res, 200, "Bicicletas obtenidas exitosamente", bicycles);

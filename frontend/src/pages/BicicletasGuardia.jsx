@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useBuscarBicicleta } from '@hooks/bicicletas/useBuscarBicicleta';
+import { useAuth } from '@context/AuthContext';
 import '@styles/bicicleta.css';
 
 export default function BicicletasGuardia() {
@@ -10,6 +11,8 @@ export default function BicicletasGuardia() {
     const [error, setError] = useState(null);
     const [searched, setSearched] = useState(false);
     const { buscar } = useBuscarBicicleta();
+    const { user } = useAuth();
+    const isAdmin = user?.role?.toLowerCase() === 'administrador';
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -29,8 +32,8 @@ export default function BicicletasGuardia() {
             let query = {};
             if (searchType === 'rut') {
                 query = { rut: searchValue };
-            } else if (searchType === 'id') {
-                query = { id: searchValue };
+            } else if (searchType === 'cupoId') {
+                query = { cupoId: searchValue };
             }
             
             const data = await buscar(query);
@@ -57,7 +60,7 @@ export default function BicicletasGuardia() {
                         onChange={(e) => setSearchType(e.target.value)}
                     >
                         <option value="rut">RUT del Propietario</option>
-                        <option value="id">ID de la Bicicleta</option>
+                        <option value="cupoId">Número de Cupo</option>
                     </select>
                 </div>
 
@@ -67,7 +70,7 @@ export default function BicicletasGuardia() {
                         type="text"
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
-                        placeholder={searchType === 'rut' ? 'Ej: 12.345.678-9' : 'Ej: 3'}
+                        placeholder={searchType === 'rut' ? 'Ej: 12.345.678-9' : 'Ej: 1'}
                     />
                 </div>
 
@@ -95,10 +98,11 @@ export default function BicicletasGuardia() {
                     {!loading && bicicletas.length > 0 && (
                         <div className="bicicleta-results">
                             {bicicletas.map((bicicleta) => (
-                                <div key={bicicleta.id} className="bicicleta-card">
-                                    <h3>Bicicleta #{bicicleta.id}</h3>
+                                <div key={bicicleta.numeroSerie} className="bicicleta-card">
+                                    {isAdmin && <h3>Bicicleta #{bicicleta.id}</h3>}
                                     <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
                                     <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
+                                    <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
                                     <p><strong>Estado:</strong> {bicicleta.estado}</p>
                                     
                                     {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (

@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       {
         path: "/bicicletas",
         element: (
-          <ProtectedRoute allowedRoles={["administrador"]}>
+          <ProtectedRoute allowedRoles={["administrador", "guardia"]}>
             <Bicicletas />
           </ProtectedRoute>
         ),

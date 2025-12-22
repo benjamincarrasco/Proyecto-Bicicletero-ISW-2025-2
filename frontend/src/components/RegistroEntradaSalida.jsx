@@ -110,7 +110,7 @@ export default function RegistroEntradaSalida() {
                 observaciones: formSalida.observaciones || undefined
             };
 
-            const resultado = await registrarSalida(datosSalida);
+            await registrarSalida(datosSalida);
             setMensaje(`✓ Salida registrada exitosamente`);
             
             // Limpiar formulario

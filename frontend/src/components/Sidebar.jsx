@@ -50,6 +50,14 @@ const Sidebar = () => {
 
           {userRole === "guardia" && (
             <li>
+              <NavLink to="/bicicletas">
+                <FaBicycle className="icon"/> Bicicletas
+              </NavLink>
+            </li>
+          )}
+
+          {userRole === "guardia" && (
+            <li>
               <NavLink to="/buscar-bicicletas">
                 <FaBicycle className="icon"/> Buscar Bicicletas
               </NavLink>

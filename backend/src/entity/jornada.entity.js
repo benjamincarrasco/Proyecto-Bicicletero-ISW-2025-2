@@ -17,7 +17,7 @@ const JornadaSchema = new EntitySchema({
     },
     cupoId: {
       type: "int",
-      nullable: false,
+      nullable: true,
     },
     rutEstudiante: {
       type: "varchar",

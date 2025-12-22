@@ -4,7 +4,7 @@ import ParkingConfig from "../entity/parkingConfig.entity.js";
 import Jornada from "../entity/jornada.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 
-export async function buscarBicicletaService(query) {
+export async function buscarBicicletaService(query, userRole = null) {
   try {
     const { rut, cupoId, id } = query;
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
@@ -28,13 +28,19 @@ export async function buscarBicicletaService(query) {
     }
 
     // Obtener historial de jornadas para cada bicicleta
+    const isGuardia = userRole && userRole.toLowerCase() === "guardia";
     const bicicletasConHistorial = await Promise.all(
       bicycles.map(async (bici) => {
         const jornadas = await jornadaRepository.find({
           where: { bicicletaId: bici.id },
           order: { fechaIngreso: "DESC" }
         });
-        return { ...bici, jornadas };
+        const resultado = { ...bici, jornadas };
+        // Remover id si es guardia
+        if (isGuardia) {
+          delete resultado.id;
+        }
+        return resultado;
       })
     );
 
@@ -54,6 +60,22 @@ export async function registerBicycleService(bicycleData) {
       return [null, "No hay cupos disponibles en el bicicletero"];
     }
 
+    // Buscar el primer cupo disponible (que NO esté siendo usado por una bicicleta en estado "EnUso")
+    let cupoAsignado = null;
+    for (let i = 1; i <= config.totalCupos; i++) {
+      const cupoEnUso = await bicycleRepository.findOne({ 
+        where: { cupoId: i, estado: "EnUso" } 
+      });
+      if (!cupoEnUso) {
+        cupoAsignado = i;
+        break;
+      }
+    }
+
+    if (!cupoAsignado) {
+      return [null, "No hay cupos disponibles en el bicicletero"];
+    }
+
     // Buscar por numeroSerie: si existe y está "Disponible" reutilizar, si está "EnUso" bloquear
     const existingBicycle = await bicycleRepository.findOne({ where: { numeroSerie: bicycleData.numeroSerie } });
 
@@ -69,7 +91,7 @@ export async function registerBicycleService(bicycleData) {
       existingBicycle.rutPropietario = bicycleData.rutPropietario || existingBicycle.rutPropietario;
       existingBicycle.nombrePropietario = bicycleData.nombrePropietario || existingBicycle.nombrePropietario;
       existingBicycle.emailPropietario = bicycleData.emailPropietario || existingBicycle.emailPropietario;
-      existingBicycle.cupoId = bicycleData.cupoId || existingBicycle.cupoId || 1;
+      existingBicycle.cupoId = cupoAsignado;
       existingBicycle.estado = "EnUso";
 
       const savedBicycle = await bicycleRepository.save(existingBicycle);
@@ -93,11 +115,11 @@ export async function registerBicycleService(bicycleData) {
       return [{ ...savedBicycle, jornadaId: nuevaJornada.id }, null];
     }
 
-    // Si no existe, crear nuevo registro como antes
+    // Si no existe, crear nuevo registro con cupo asignado
     const newBicycle = bicycleRepository.create({
       ...bicycleData,
       estado: "EnUso",
-      cupoId: bicycleData.cupoId || 1,
+      cupoId: cupoAsignado,
     });
 
     const savedBicycle = await bicycleRepository.save(newBicycle);
@@ -164,7 +186,7 @@ export async function registerBicycleExitService(exitData) {
 
     await jornadaRepository.save(jornada);
 
-    // Actualizar estado de la bicicleta
+    // Actualizar estado de la bicicleta - pero mantener el cupoId para historial
     bicycle.estado = "Disponible";
     await bicycleRepository.save(bicycle);
 
@@ -215,7 +237,7 @@ export async function removeBicycleService(bicycleId) {
   }
 }
 
-export async function getAllBicicletasService() {
+export async function getAllBicicletasService(userRole = null) {
   try {
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
     const bicycles = await bicycleRepository.find({
@@ -226,7 +248,13 @@ export async function getAllBicicletasService() {
       return [[], null];
     }
 
-    return [bicycles, null];
+    // Si el usuario es guardia, remover el id de cada bicicleta
+    const isGuardia = userRole && userRole.toLowerCase() === "guardia";
+    const processedBicycles = isGuardia 
+      ? bicycles.map(({ id, ...rest }) => rest)
+      : bicycles;
+
+    return [processedBicycles, null];
   } catch (error) {
     return [null, "Error al obtener las bicicletas"];
   }

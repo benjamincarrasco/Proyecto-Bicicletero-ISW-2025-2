@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useGetBicicletas } from '@hooks/bicicletas/useGetBicicletas';
+import { useAuth } from '@context/AuthContext';
 import '@styles/bicicleta.css';
 
 export default function Bicicletas() {
@@ -7,6 +8,8 @@ export default function Bicicletas() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const { fetchBicicletas: getBicicletas } = useGetBicicletas();
+    const { user } = useAuth();
+    const isAdmin = user?.role?.toLowerCase() === 'administrador';
 
     useEffect(() => {
         const fetchData = async () => {
@@ -36,19 +39,21 @@ export default function Bicicletas() {
                 <table>
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            {isAdmin && <th>ID</th>}
                             <th>Número de Serie</th>
                             <th>Propietario (RUT)</th>
+                            <th>Cupo</th>
                             <th>Estado</th>
                         </tr>
                     </thead>
                     <tbody>
                         {bicicletas.length > 0 ? (
                             bicicletas.map((bici) => (
-                                <tr key={bici.id}>
-                                    <td>{bici.id}</td>
+                                <tr key={bici.id || bici.numeroSerie}>
+                                    {isAdmin && <td>{bici.id}</td>}
                                     <td>{bici.numeroSerie}</td>
                                     <td>{bici.rutPropietario}</td>
+                                    <td>{bici.cupoId}</td>
                                     <td>
                                         <span className={`status ${bici.estado.toLowerCase()}`}>
                                             {bici.estado}
@@ -58,7 +63,7 @@ export default function Bicicletas() {
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="4">No hay bicicletas registradas</td>
+                                <td colSpan={isAdmin ? "5" : "4"}>No hay bicicletas registradas</td>
                             </tr>
                         )}
                     </tbody>
