@@ -2,10 +2,11 @@
 import Joi from "joi";
 
 export const buscarBicicletaValidation = Joi.object({
+  id: Joi.number().integer().positive(),
   rut: Joi.string().pattern(/^[0-9]{7,8}-[0-9kK]{1}$/),
   cupoId: Joi.number().integer().positive()
-}).or("rut", "cupoId").messages({
-  "object.missing": "Debe proporcionar rut o cupoId para la búsqueda"
+}).or("id", "rut", "cupoId").messages({
+  "object.missing": "Debe proporcionar id, rut o cupoId para la búsqueda"
 });
 
 export const bicycleRegisterValidation = Joi.object({

@@ -11,14 +11,14 @@ import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers
 
 export async function buscarBicicleta(req, res) {
   try {
-    const { rut, cupoId } = req.query;
+    const { rut, cupoId, id } = req.query;
 
-    const { error } = buscarBicicletaValidation.validate({ rut, cupoId });
+    const { error } = buscarBicicletaValidation.validate({ rut, cupoId, id });
     if (error) {
       return handleErrorClient(res, 400, error.message);
     }
 
-    const [bicicleta, errorBicicleta] = await buscarBicicletaService({ rut, cupoId });
+    const [bicicleta, errorBicicleta] = await buscarBicicletaService({ rut, cupoId, id });
     if (errorBicicleta) 
         return handleErrorClient(res, 404, errorBicicleta);
 

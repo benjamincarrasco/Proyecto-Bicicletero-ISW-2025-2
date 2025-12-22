@@ -6,19 +6,21 @@ import { AppDataSource } from "../config/configDb.js";
 
 export async function buscarBicicletaService(query) {
   try {
-    const { rut, cupoId } = query;
+    const { rut, cupoId, id } = query;
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
     const jornadaRepository = AppDataSource.getRepository(Jornada);
 
     let whereClause = {}; 
     
-    if (rut) {
+    if (id) {
+      whereClause.id = parseInt(id);
+    } else if (rut) {
       whereClause.rutPropietario = rut;
     } else if (cupoId) {
       whereClause.cupoId = parseInt(cupoId);
     }
 
-    // Buscar todas las bicicletas del propietario/cupo (sin filtro de estado)
+    // Buscar todas las bicicletas del propietario/cupo/id (sin filtro de estado)
     const bicycles = await bicycleRepository.find({ where: whereClause });
 
     if (!bicycles || bicycles.length === 0) {
@@ -155,7 +157,7 @@ export async function registerBicycleExitService(exitData) {
 
     // Actualizar la jornada con verificación de identidad
     jornada.fechaSalida = new Date();
-    jornada.estado = "Completada";
+    jornada.estado = "Retirada";
     jornada.identidadVerificada = true;
     jornada.tipoDocumento = tipoDocumento;
     jornada.observaciones = observaciones;
