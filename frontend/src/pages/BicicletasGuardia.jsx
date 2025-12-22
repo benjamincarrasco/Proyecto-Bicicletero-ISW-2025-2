@@ -90,7 +90,7 @@ export default function BicicletasGuardia() {
             {error && <div className="error-message">{error}</div>}
 
             {searched && (
-                <>
+                <div className="search-results-wrapper">
                     {loading && <div>Cargando...</div>}
                     {!loading && bicicletas.length > 0 && (
                         <div className="bicicleta-results">
@@ -133,7 +133,7 @@ export default function BicicletasGuardia() {
                     {!loading && bicicletas.length === 0 && (
                         <div>No se encontraron bicicletas</div>
                     )}
-                </>
+                </div>
             )}
         </div>
     );
