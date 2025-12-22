@@ -6,6 +6,6 @@ export async function getParkingConfigService() {
 }
 
 export async function updateParkingConfigService(configData) {
-    const response = await axios.put('/parking/config', configData);
+    const response = await axios.patch('/parking/config', configData);
     return response.data.data;
 }
