@@ -40,7 +40,6 @@ export default function Bicicletas() {
                             <th>Número de Serie</th>
                             <th>Propietario (RUT)</th>
                             <th>Estado</th>
-                            <th>Cupo ID</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,12 +54,11 @@ export default function Bicicletas() {
                                             {bici.estado}
                                         </span>
                                     </td>
-                                    <td>{bici.cupoId}</td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan="5">No hay bicicletas registradas</td>
+                                <td colSpan="4">No hay bicicletas registradas</td>
                             </tr>
                         )}
                     </tbody>

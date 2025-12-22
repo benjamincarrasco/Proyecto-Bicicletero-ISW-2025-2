@@ -12,4 +12,6 @@ body{
     flex: 1;
     padding: 20px;
     margin-left: 28vh; /* Ajustado para la Sidebar*/
+    overflow-y: auto;
+    max-height: 100vh;
 }

@@ -26,9 +26,12 @@ export default function BicicletasGuardia() {
             setLoading(true);
             setError(null);
             
-            const query = searchType === 'rut' 
-                ? { rut: searchValue }
-                : { cupoId: searchValue };
+            let query = {};
+            if (searchType === 'rut') {
+                query = { rut: searchValue };
+            } else if (searchType === 'id') {
+                query = { id: searchValue };
+            }
             
             const data = await buscar(query);
             setBicicletas(data || []);
@@ -54,7 +57,7 @@ export default function BicicletasGuardia() {
                         onChange={(e) => setSearchType(e.target.value)}
                     >
                         <option value="rut">RUT del Propietario</option>
-                        <option value="cupoId">ID del Cupo</option>
+                        <option value="id">ID de la Bicicleta</option>
                     </select>
                 </div>
 
@@ -64,7 +67,7 @@ export default function BicicletasGuardia() {
                         type="text"
                         value={searchValue}
                         onChange={(e) => setSearchValue(e.target.value)}
-                        placeholder={searchType === 'rut' ? 'Ej: 12.345.678-9' : 'Ej: 5'}
+                        placeholder={searchType === 'rut' ? 'Ej: 12.345.678-9' : 'Ej: 3'}
                     />
                 </div>
 
@@ -96,7 +99,6 @@ export default function BicicletasGuardia() {
                                     <h3>Bicicleta #{bicicleta.id}</h3>
                                     <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
                                     <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
-                                    <p><strong>Cupo ID:</strong> {bicicleta.cupoId}</p>
                                     <p><strong>Estado:</strong> {bicicleta.estado}</p>
                                     
                                     {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
