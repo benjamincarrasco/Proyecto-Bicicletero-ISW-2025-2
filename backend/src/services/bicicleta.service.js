@@ -10,7 +10,7 @@ export async function buscarBicicletaService(query, userRole = null) {
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
     const jornadaRepository = AppDataSource.getRepository(Jornada);
 
-    let whereClause = {}; 
+    let whereClause = { estado: "EnUso" }; 
     
     if (id) {
       whereClause.id = parseInt(id);
@@ -20,7 +20,7 @@ export async function buscarBicicletaService(query, userRole = null) {
       whereClause.cupoId = parseInt(cupoId);
     }
 
-    // Buscar todas las bicicletas del propietario/cupo/id (sin filtro de estado)
+    // Buscar bicicletas del propietario/cupo/id que estén ingresadas (EnUso)
     const bicycles = await bicycleRepository.find({ where: whereClause });
 
     if (!bicycles || bicycles.length === 0) {
@@ -44,7 +44,20 @@ export async function buscarBicicletaService(query, userRole = null) {
       })
     );
 
-    return [bicicletasConHistorial, null];
+    // Si la búsqueda fue por cupoId, agregar historial completo del cupo
+    let resultado = bicicletasConHistorial;
+    if (cupoId) {
+      const historialdCupo = await jornadaRepository.find({
+        where: { cupoId: parseInt(cupoId) },
+        order: { fechaIngreso: "DESC" }
+      });
+      resultado = {
+        bicicletas: bicicletasConHistorial,
+        historialdCupo: historialdCupo
+      };
+    }
+
+    return [resultado, null];
   } catch (error) {
     return [null, "Error interno del servidor"];
   }
