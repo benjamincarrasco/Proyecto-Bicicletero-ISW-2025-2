@@ -95,47 +95,127 @@ export default function BicicletasGuardia() {
             {searched && (
                 <div className="search-results-wrapper">
                     {loading && <div>Cargando...</div>}
-                    {!loading && bicicletas.length > 0 && (
-                        <div className="bicicleta-results">
-                            {bicicletas.map((bicicleta) => (
-                                <div key={bicicleta.numeroSerie} className="bicicleta-card">
-                                    {isAdmin && <h3>Bicicleta #{bicicleta.id}</h3>}
-                                    <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
-                                    <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
-                                    <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
-                                    <p><strong>Estado:</strong> {bicicleta.estado}</p>
-                                    
-                                    {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
-                                        <div className="historial">
-                                            <h4>Historial de Entradas y Salidas</h4>
+                    {!loading && (
+                        <>
+                            {searchType === 'cupoId' && bicicletas.bicicletas ? (
+                                // Búsqueda por cupoId - mostrar bicicleta actual + historial del cupo
+                                <>
+                                    {bicicletas.bicicletas.length > 0 && (
+                                        <div className="bicicleta-results">
+                                            {bicicletas.bicicletas.map((bicicleta) => (
+                                                <div key={bicicleta.numeroSerie} className="bicicleta-card">
+                                                    {isAdmin && <h3>Bicicleta #{bicicleta.id}</h3>}
+                                                    <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
+                                                    <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
+                                                    <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
+                                                    <p><strong>Estado:</strong> {bicicleta.estado}</p>
+                                                    
+                                                    {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
+                                                        <div className="historial">
+                                                            <h4>Historial de Entradas y Salidas</h4>
+                                                            <table className="historial-table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Fecha Entrada</th>
+                                                                        <th>Fecha Salida</th>
+                                                                        <th>Estado</th>
+                                                                        <th>Documento</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {bicicleta.jornadas.map((jornada) => (
+                                                                        <tr key={jornada.id}>
+                                                                            <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
+                                                                            <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
+                                                                            <td>{jornada.estado}</td>
+                                                                            <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
+                                    {/* Historial completo del cupo */}
+                                    {bicicletas.historialdCupo && bicicletas.historialdCupo.length > 0 && (
+                                        <div className="historial-cupo">
+                                            <h4>Historial Completo del Cupo</h4>
                                             <table className="historial-table">
                                                 <thead>
                                                     <tr>
                                                         <th>Fecha Entrada</th>
                                                         <th>Fecha Salida</th>
+                                                        <th>Estudiante</th>
+                                                        <th>RUT</th>
+                                                        <th>Tipo Documento</th>
                                                         <th>Estado</th>
-                                                        <th>Documento</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {bicicleta.jornadas.map((jornada) => (
+                                                    {bicicletas.historialdCupo.map((jornada) => (
                                                         <tr key={jornada.id}>
                                                             <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
                                                             <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
-                                                            <td>{jornada.estado}</td>
+                                                            <td>{jornada.nombreEstudiante}</td>
+                                                            <td>{jornada.rutEstudiante}</td>
                                                             <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                            <td>{jornada.estado}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                             </table>
                                         </div>
                                     )}
+                                </>
+                            ) : (
+                                // Búsqueda por RUT o ID - mostrar como antes
+                                <div className="bicicleta-results">
+                                    {Array.isArray(bicicletas) && bicicletas.length > 0 ? (
+                                        bicicletas.map((bicicleta) => (
+                                            <div key={bicicleta.numeroSerie} className="bicicleta-card">
+                                                {isAdmin && <h3>Bicicleta #{bicicleta.id}</h3>}
+                                                <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
+                                                <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
+                                                <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
+                                                <p><strong>Estado:</strong> {bicicleta.estado}</p>
+                                                
+                                                {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
+                                                    <div className="historial">
+                                                        <h4>Historial de Entradas y Salidas</h4>
+                                                        <table className="historial-table">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Fecha Entrada</th>
+                                                                    <th>Fecha Salida</th>
+                                                                    <th>Estado</th>
+                                                                    <th>Documento</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {bicicleta.jornadas.map((jornada) => (
+                                                                    <tr key={jornada.id}>
+                                                                        <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
+                                                                        <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
+                                                                        <td>{jornada.estado}</td>
+                                                                        <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                                    </tr>
+                                                                ))}
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div>No se encontraron bicicletas</div>
+                                    )}
                                 </div>
-                            ))}
-                        </div>
-                    )}
-                    {!loading && bicicletas.length === 0 && (
-                        <div>No se encontraron bicicletas</div>
+                            )}
+                        </>
                     )}
                 </div>
             )}
