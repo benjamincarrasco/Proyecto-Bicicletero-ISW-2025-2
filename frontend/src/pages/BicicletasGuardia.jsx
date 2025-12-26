@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useBuscarBicicleta } from '@hooks/bicicletas/useBuscarBicicleta';
-import { useAuth } from '@context/AuthContext';
 import '@styles/bicicleta.css';
 
 export default function BicicletasGuardia() {
@@ -14,8 +13,6 @@ export default function BicicletasGuardia() {
     const [expandedCupoHistorial, setExpandedCupoHistorial] = useState(true);
     const [expandedRutHistorial, setExpandedRutHistorial] = useState(true);
     const { buscar } = useBuscarBicicleta();
-    const { user } = useAuth();
-    const isAdmin = user?.role?.toLowerCase() === 'administrador';
 
     const handleSearch = async (e) => {
         e.preventDefault();
