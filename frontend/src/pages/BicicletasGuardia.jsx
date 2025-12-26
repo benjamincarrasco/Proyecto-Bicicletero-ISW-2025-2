@@ -10,6 +10,9 @@ export default function BicicletasGuardia() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [searched, setSearched] = useState(false);
+    const [expandedCard, setExpandedCard] = useState(null);
+    const [expandedCupoHistorial, setExpandedCupoHistorial] = useState(true);
+    const [expandedRutHistorial, setExpandedRutHistorial] = useState(true);
     const { buscar } = useBuscarBicicleta();
     const { user } = useAuth();
     const isAdmin = user?.role?.toLowerCase() === 'administrador';
@@ -104,13 +107,23 @@ export default function BicicletasGuardia() {
                                         <div className="bicicleta-results">
                                             {bicicletas.bicicletas.map((bicicleta) => (
                                                 <div key={bicicleta.numeroSerie} className="bicicleta-card">
-                                                    {isAdmin && <h3>Bicicleta #{bicicleta.id}</h3>}
-                                                    <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
-                                                    <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
-                                                    <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
-                                                    <p><strong>Estado:</strong> {bicicleta.estado}</p>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <div>
+                                                            <h3>Bicicleta de {bicicleta.nombrePropietario} (ID: {bicicleta.id})</h3>
+                                                            <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
+                                                            <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
+                                                            <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
+                                                            <p><strong>Estado:</strong> {bicicleta.estado}</p>
+                                                        </div>
+                                                        <button 
+                                                            onClick={() => setExpandedCard(expandedCard === bicicleta.numeroSerie ? null : bicicleta.numeroSerie)}
+                                                            style={{ padding: '8px 12px', cursor: 'pointer' }}
+                                                        >
+                                                            {expandedCard === bicicleta.numeroSerie ? '▼' : '▶'}
+                                                        </button>
+                                                    </div>
                                                     
-                                                    {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
+                                                    {expandedCard === bicicleta.numeroSerie && bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
                                                         <div className="historial">
                                                             <h4>Historial de Entradas y Salidas</h4>
                                                             <table className="historial-table">
@@ -143,77 +156,143 @@ export default function BicicletasGuardia() {
                                     {/* Historial completo del cupo */}
                                     {bicicletas.historialdCupo && bicicletas.historialdCupo.length > 0 && (
                                         <div className="historial-cupo">
-                                            <h4>Historial Completo del Cupo</h4>
-                                            <table className="historial-table">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Fecha Entrada</th>
-                                                        <th>Fecha Salida</th>
-                                                        <th>Estudiante</th>
-                                                        <th>RUT</th>
-                                                        <th>Tipo Documento</th>
-                                                        <th>Estado</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {bicicletas.historialdCupo.map((jornada) => (
-                                                        <tr key={jornada.id}>
-                                                            <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
-                                                            <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
-                                                            <td>{jornada.nombreEstudiante}</td>
-                                                            <td>{jornada.rutEstudiante}</td>
-                                                            <td>{jornada.tipoDocumento || 'N/A'}</td>
-                                                            <td>{jornada.estado}</td>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <h4>Historial Completo del Cupo</h4>
+                                                <button 
+                                                    onClick={() => setExpandedCupoHistorial(!expandedCupoHistorial)}
+                                                    style={{ padding: '8px 12px', cursor: 'pointer' }}
+                                                >
+                                                    {expandedCupoHistorial ? '▼' : '▶'}
+                                                </button>
+                                            </div>
+                                            {expandedCupoHistorial && (
+                                                <table className="historial-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fecha Entrada</th>
+                                                            <th>Fecha Salida</th>
+                                                            <th>Estudiante</th>
+                                                            <th>RUT</th>
+                                                            <th>Tipo Documento</th>
+                                                            <th>Estado</th>
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody>
+                                                        {bicicletas.historialdCupo.map((jornada) => (
+                                                            <tr key={jornada.id}>
+                                                                <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
+                                                                <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
+                                                                <td>{jornada.nombreEstudiante}</td>
+                                                                <td>{jornada.rutEstudiante}</td>
+                                                                <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                                <td>{jornada.estado}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            )}
                                         </div>
                                     )}
                                 </>
                             ) : (
-                                // Búsqueda por RUT o ID - mostrar como antes
-                                <div className="bicicleta-results">
-                                    {Array.isArray(bicicletas) && bicicletas.length > 0 ? (
-                                        bicicletas.map((bicicleta) => (
-                                            <div key={bicicleta.numeroSerie} className="bicicleta-card">
-                                                {isAdmin && <h3>Bicicleta #{bicicleta.id}</h3>}
-                                                <p><strong>Número de Serie:</strong> {bicicleta.numeroSerie}</p>
-                                                <p><strong>Propietario:</strong> {bicicleta.rutPropietario}</p>
-                                                <p><strong>Cupo:</strong> {bicicleta.cupoId}</p>
-                                                <p><strong>Estado:</strong> {bicicleta.estado}</p>
-                                                
-                                                {bicicleta.jornadas && bicicleta.jornadas.length > 0 && (
-                                                    <div className="historial">
-                                                        <h4>Historial de Entradas y Salidas</h4>
-                                                        <table className="historial-table">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Fecha Entrada</th>
-                                                                    <th>Fecha Salida</th>
-                                                                    <th>Estado</th>
-                                                                    <th>Documento</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                {bicicleta.jornadas.map((jornada) => (
-                                                                    <tr key={jornada.id}>
-                                                                        <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
-                                                                        <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
-                                                                        <td>{jornada.estado}</td>
-                                                                        <td>{jornada.tipoDocumento || 'N/A'}</td>
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
+                                // Búsqueda por RUT o ID - mostrar solo bicicleta activa + historial
+                                <>
+                                    {bicicletas.bicicletas ? (
+                                        <div className="bicicleta-results">
+                                            {(() => {
+                                                const bicicletaActiva = bicicletas.bicicletas.find(b => b.estado === "Ingresada");
+                                                return bicicletaActiva ? (
+                                                    <div key={bicicletaActiva.numeroSerie} className="bicicleta-card">
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                <div>
+                                                                <h3>Bicicleta de {bicicletaActiva.nombrePropietario} (ID: {bicicletaActiva.id})</h3>
+                                                                <p><strong>Número de Serie:</strong> {bicicletaActiva.numeroSerie}</p>
+                                                                <p><strong>Propietario:</strong> {bicicletaActiva.rutPropietario}</p>
+                                                                <p><strong>Cupo:</strong> {bicicletaActiva.cupoId}</p>
+                                                                <p><strong>Estado:</strong> {bicicletaActiva.estado}</p>
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => setExpandedCard(expandedCard === bicicletaActiva.numeroSerie ? null : bicicletaActiva.numeroSerie)}
+                                                                style={{ padding: '8px 12px', cursor: 'pointer' }}
+                                                            >
+                                                                {expandedCard === bicicletaActiva.numeroSerie ? '▼' : '▶'}
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        {expandedCard === bicicletaActiva.numeroSerie && bicicletaActiva.jornadas && bicicletaActiva.jornadas.length > 0 && (
+                                                            <div className="historial">
+                                                                <h4>Historial de Entradas y Salidas</h4>
+                                                                <table className="historial-table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Fecha Entrada</th>
+                                                                            <th>Fecha Salida</th>
+                                                                            <th>Estado</th>
+                                                                            <th>Documento</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {bicicletaActiva.jornadas.map((jornada) => (
+                                                                            <tr key={jornada.id}>
+                                                                                <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
+                                                                                <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
+                                                                                <td>{jornada.estado}</td>
+                                                                                <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
+                                                ) : (
+                                                    <div>No hay bicicletas actualmente en el bicicletero</div>
+                                                );
+                                            })()}
+                                        </div>
+                                    ) : null}
+
+                                    {/* Historial completo del RUT */}
+                                    {bicicletas.historialDelRut && bicicletas.historialDelRut.length > 0 && (
+                                        <div className="historial-cupo">
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <h4>Historial Completo del RUT</h4>
+                                                <button 
+                                                    onClick={() => setExpandedRutHistorial(!expandedRutHistorial)}
+                                                    style={{ padding: '8px 12px', cursor: 'pointer' }}
+                                                >
+                                                    {expandedRutHistorial ? '▼' : '▶'}
+                                                </button>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <div>No se encontraron bicicletas</div>
+                                            {expandedRutHistorial && (
+                                                <table className="historial-table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Fecha Entrada</th>
+                                                            <th>Fecha Salida</th>
+                                                            <th>Estudiante</th>
+                                                            <th>RUT</th>
+                                                            <th>Tipo Documento</th>
+                                                            <th>Estado</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {bicicletas.historialDelRut.map((jornada) => (
+                                                            <tr key={jornada.id}>
+                                                                <td>{new Date(jornada.fechaIngreso).toLocaleString('es-CL')}</td>
+                                                                <td>{jornada.fechaSalida ? new Date(jornada.fechaSalida).toLocaleString('es-CL') : 'N/A'}</td>
+                                                                <td>{jornada.nombreEstudiante}</td>
+                                                                <td>{jornada.rutEstudiante}</td>
+                                                                <td>{jornada.tipoDocumento || 'N/A'}</td>
+                                                                <td>{jornada.estado}</td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            )}
+                                        </div>
                                     )}
-                                </div>
+                                </>
                             )}
                         </>
                     )}
