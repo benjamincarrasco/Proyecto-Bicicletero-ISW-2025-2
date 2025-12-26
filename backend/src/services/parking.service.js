@@ -13,18 +13,18 @@ export async function updateParkingConfigService(configData) {
         config = configRepository.create({ id: 1 });
     }
 
-    const bicicletasEnUso = await bicicletaRepository.count({
-        where: { estado: "EnUso" }
+    const bicicletasIngresadas = await bicicletaRepository.count({
+        where: { estado: "Ingresada" }
     });
 
-    if (configData.totalCupos < bicicletasEnUso) {
+    if (configData.totalCupos < bicicletasIngresadas) {
         return [null, `No se puede reducir a ${configData.totalCupos} cupos. 
-        Hay ${bicicletasEnUso} bicicletas actualmente en uso`];
+        Hay ${bicicletasIngresadas} bicicletas actualmente ingresadas`];
     }
 
     config.totalCupos = configData.totalCupos;
-    config.cuposOcupados = bicicletasEnUso;
-    config.cuposDisponibles = configData.totalCupos - bicicletasEnUso;
+    config.cuposOcupados = bicicletasIngresadas;
+    config.cuposDisponibles = configData.totalCupos - bicicletasIngresadas;
     config.descripcion = configData.descripcion || config.descripcion;
 
     await configRepository.save(config);

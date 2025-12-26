@@ -18,9 +18,9 @@ export async function getDashboardDataService() {
       return [null, "Configuración del parking no encontrada"];
     }
 
-    // 2. Contar bicicletas actualmente en estado "EnUso" (ocupadas)
+    // 2. Contar bicicletas actualmente en estado "Ingresada" (ocupadas)
     const bicycleOccupancy = await bicycleRepository.count({
-      where: { estado: "EnUso" },
+      where: { estado: "Ingresada" },
     });
 
     // 3. Calcular cupos libres

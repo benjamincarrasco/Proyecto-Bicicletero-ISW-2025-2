@@ -10,7 +10,7 @@ export async function buscarBicicletaService(query, userRole = null) {
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
     const jornadaRepository = AppDataSource.getRepository(Jornada);
 
-    let whereClause = { estado: "EnUso" }; 
+    let whereClause = {}; 
     
     if (id) {
       whereClause.id = parseInt(id);
@@ -20,7 +20,7 @@ export async function buscarBicicletaService(query, userRole = null) {
       whereClause.cupoId = parseInt(cupoId);
     }
 
-    // Buscar bicicletas del propietario/cupo/id que estén ingresadas (EnUso)
+    // Buscar bicicletas del propietario/cupo/id que estén ingresadas (Ingresada)
     const bicycles = await bicycleRepository.find({ where: whereClause });
 
     if (!bicycles || bicycles.length === 0) {
@@ -36,15 +36,11 @@ export async function buscarBicicletaService(query, userRole = null) {
           order: { fechaIngreso: "DESC" }
         });
         const resultado = { ...bici, jornadas };
-        // Remover id si es guardia
-        if (isGuardia) {
-          delete resultado.id;
-        }
         return resultado;
       })
     );
 
-    // Si la búsqueda fue por cupoId, agregar historial completo del cupo
+    // Si la búsqueda fue por cupoId o rut, agregar historial completo
     let resultado = bicicletasConHistorial;
     if (cupoId) {
       const historialdCupo = await jornadaRepository.find({
@@ -54,6 +50,15 @@ export async function buscarBicicletaService(query, userRole = null) {
       resultado = {
         bicicletas: bicicletasConHistorial,
         historialdCupo: historialdCupo
+      };
+    } else if (rut) {
+      const historialDelRut = await jornadaRepository.find({
+        where: { rutEstudiante: rut },
+        order: { fechaIngreso: "DESC" }
+      });
+      resultado = {
+        bicicletas: bicicletasConHistorial,
+        historialDelRut: historialDelRut
       };
     }
 
@@ -73,11 +78,11 @@ export async function registerBicycleService(bicycleData) {
       return [null, "No hay cupos disponibles en el bicicletero"];
     }
 
-    // Buscar el primer cupo disponible (que NO esté siendo usado por una bicicleta en estado "EnUso")
+    // Buscar el primer cupo disponible (que NO esté siendo usado por una bicicleta en estado "Ingresada")
     let cupoAsignado = null;
     for (let i = 1; i <= config.totalCupos; i++) {
       const cupoEnUso = await bicycleRepository.findOne({ 
-        where: { cupoId: i, estado: "EnUso" } 
+        where: { cupoId: i, estado: "Ingresada" } 
       });
       if (!cupoEnUso) {
         cupoAsignado = i;
@@ -89,11 +94,11 @@ export async function registerBicycleService(bicycleData) {
       return [null, "No hay cupos disponibles en el bicicletero"];
     }
 
-    // Buscar por numeroSerie: si existe y está "Disponible" reutilizar, si está "EnUso" bloquear
+    // Buscar por numeroSerie: si existe y está "Disponible" reutilizar, si está "Ingresada" bloquear
     const existingBicycle = await bicycleRepository.findOne({ where: { numeroSerie: bicycleData.numeroSerie } });
 
     if (existingBicycle) {
-      if (existingBicycle.estado === "EnUso") {
+      if (existingBicycle.estado === "Ingresada") {
         return [null, "La bicicleta ya se encuentra ingresada en el bicicletero"];
       }
 
@@ -105,7 +110,7 @@ export async function registerBicycleService(bicycleData) {
       existingBicycle.nombrePropietario = bicycleData.nombrePropietario || existingBicycle.nombrePropietario;
       existingBicycle.emailPropietario = bicycleData.emailPropietario || existingBicycle.emailPropietario;
       existingBicycle.cupoId = cupoAsignado;
-      existingBicycle.estado = "EnUso";
+      existingBicycle.estado = "Ingresada";
 
       const savedBicycle = await bicycleRepository.save(existingBicycle);
 
@@ -131,7 +136,7 @@ export async function registerBicycleService(bicycleData) {
     // Si no existe, crear nuevo registro con cupo asignado
     const newBicycle = bicycleRepository.create({
       ...bicycleData,
-      estado: "EnUso",
+      estado: "Ingresada",
       cupoId: cupoAsignado,
     });
 
@@ -169,7 +174,7 @@ export async function registerBicycleExitService(exitData) {
 
     // Verificar que la bicicleta existe y está en uso
     const bicycle = await bicycleRepository.findOne({
-      where: { id: bicicletaId, estado: "EnUso" }
+      where: { id: bicicletaId, estado: "Ingresada" }
     });
 
     if (!bicycle) {
@@ -232,7 +237,7 @@ export async function removeBicycleService(bicycleId) {
 
     // Cancelar jornada activa si existe
     const jornada = await jornadaRepository.findOne({
-      where: { bicicletaId: bicycleId, estado: "EnUso" }
+      where: { bicicletaId: bicycleId, estado: "Ingresada" }
     });
 
     if (jornada) {
@@ -254,7 +259,7 @@ export async function getAllBicicletasService(userRole = null) {
   try {
     const bicycleRepository = AppDataSource.getRepository(Bicicleta);
     const bicycles = await bicycleRepository.find({
-      where: { estado: "EnUso" }
+      where: { estado: "Ingresada" }
     });
     
     if (!bicycles || bicycles.length === 0) {
